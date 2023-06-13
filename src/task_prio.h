@@ -10,6 +10,7 @@
 
 
 #define BLINKER_TASK_PRIO (tskIDLE_PRIORITY + 1)
+#define CONSOLE_TASK_PRIO (tskIDLE_PRIORITY + 1)
 
 
 
