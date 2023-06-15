@@ -25,7 +25,7 @@ cmake_install.cmake
 
 
 /*.txt
-# ! src/CMakeLists.txt
+!CMakeLists.txt
 
 CMakeCache.txt
 /build/
