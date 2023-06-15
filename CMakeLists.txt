@@ -51,11 +51,12 @@ add_executable(picow4wd_server
 	src/task_console.c
 	src/task_cyw43.c
 	src/panic.c
+	src/global_signal.c
 )
 
 
 target_include_directories(picow4wd_server PRIVATE
-        freertos/include
+	freertos/include
 	freertos/portable/ThirdParty/GCC/RP2040/include/
 )
 

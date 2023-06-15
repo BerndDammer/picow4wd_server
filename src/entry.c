@@ -10,6 +10,7 @@
 #include "task_blinker.h"
 #include "task_console.h"
 #include "task_cyw43.h"
+#include "global_signal.h"
 
 int gg(void)
 {
@@ -18,17 +19,17 @@ int gg(void)
 
 int main(void)
 {
-	//board_init();
-
 	printf("\nAt main entry %i", gg()); // no output !!!!
 
 	stdio_init_all();
 	printf("\nAfter init stdio %i", gg());
 
+	global_signal_init();
 
 	blinker_init();
 	console_init();
 	task_cyw43_init();
+
 
 	printf("\nBefore scheduler %i", gg());
 	vTaskStartScheduler();

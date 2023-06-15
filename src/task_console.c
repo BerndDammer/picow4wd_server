@@ -7,13 +7,25 @@
 
 #include "task_blinker.h"
 #include "pico/stdlib.h"
+#include "pico/types.h"
+
+#include "hardware/structs/scb.h"
+
 #include <stdio.h>
 
 #include "FreeRTOS.h"
 #include "task.h"
 #include "task_prio.h"
 
+#include "lwip/netif.h"
+
+#include "global_signal.h"
+
+#define STR_BUF_LEN 100
+
 static TaskHandle_t console_taskhandle;
+
+static int c;
 
 static void console_menu()
 {
@@ -23,6 +35,7 @@ static void console_menu()
 	printf("a Show netif data\n");
 	printf("h Show hostname data\n");
 	printf("x hardware address\n");
+	printf("r reset processor\n");
 	printf("press key to select\n");
 	printf("------------------------------------\n");
 
@@ -34,37 +47,40 @@ void console_command(int c)
 	{
 	case 'a':
 	{
-//					char buffer[STR_BUF_LEN];
-//
-//					ip4addr_ntoa_r(&netif_default->ip_addr, buffer,
-//							STR_BUF_LEN);
-//					printf("\nnetif.ip_addr %s", buffer);
-//
-//					ip4addr_ntoa_r(&netif_default->netmask, buffer,
-//							STR_BUF_LEN);
-//					printf("\nnetif.netmask %s", buffer);
-//
-//					ip4addr_ntoa_r(&netif_default->gw, buffer, STR_BUF_LEN);
-//					printf("\nnetif.gw %s\n", buffer);
+		char buffer[STR_BUF_LEN];
+
+		ip4addr_ntoa_r(&netif_default->ip_addr, buffer, STR_BUF_LEN);
+		printf("\nnetif.ip_addr %s", buffer);
+
+		ip4addr_ntoa_r(&netif_default->netmask, buffer, STR_BUF_LEN);
+		printf("\nnetif.netmask %s", buffer);
+
+		ip4addr_ntoa_r(&netif_default->gw, buffer, STR_BUF_LEN);
+		printf("\nnetif.gw %s\n", buffer);
 	}
 		break;
 	case 'x':
 	{
-//					printf("\nHardware address: ");
-//					for (int i = 0; i < netif_default->hwaddr_len; i++)
-//					{
-//						printf("%02X", netif_default->hwaddr[i]);
-//						if (i != netif_default->hwaddr_len - 1)
-//						{
-//							printf(":");
-//						}
-//					}
-//					printf("\n");
+		printf("\nHardware address: ");
+		for (int i = 0; i < netif_default->hwaddr_len; i++)
+		{
+			printf("%02X", netif_default->hwaddr[i]);
+			if (i != netif_default->hwaddr_len - 1)
+			{
+				printf(":");
+			}
+		}
+		printf("\n");
 	}
 		break;
 	case 'h':
 	{
-//					printf("\nhostname: %s\n", netif_default->hostname);
+		printf("\nhostname: %s\n", netif_default->hostname);
+	}
+		break;
+	case 'r':
+	{
+		scb_hw->aircr = 0x05FA << 16 | 4; // arm M0(+) Manual
 	}
 		break;
 	case ' ':
@@ -76,33 +92,40 @@ void console_command(int c)
 
 void console_thread()
 {
-	int c;
-
 	console_menu();
 
 	while (true)
 	{
 		vTaskDelay(100);
-		bool working = true;
-		while (working)
+		xEventGroupWaitBits(
+				mainEventGroup,
+				EVENT_MASK_CONSOLE_CHAR,
+				EVENT_MASK_CONSOLE_CHAR,
+				false,
+				100000
+		);
+		if( c != 0)
 		{
-			c = getchar_timeout_us(10);
-			if (c != PICO_ERROR_TIMEOUT)
-			{
-				console_command(c);
-			}
-			else
-			{
-				working = false;
-			}
+			console_command(c);
+			c = 0;
 		}
-		//vTaskDelay(100);
+		else
+		{
+			//
+		}
 	}
+}
+
+void chars_available_callback(void *invalid)
+{
+	c = getchar();
+	xEventGroupSetBits(mainEventGroup, EVENT_MASK_CONSOLE_CHAR);
 }
 
 void console_init()
 {
 	xTaskCreate(console_thread, "CONSOLE", configMINIMAL_STACK_SIZE, NULL,
 	BLINKER_TASK_PRIO, &console_taskhandle);
+	stdio_set_chars_available_callback(chars_available_callback, NULL);
 }
 
