@@ -1,6 +1,6 @@
 call ..\..\SetEnv.bat
 
 git-cmd
-pause
+rem pause
 
 
