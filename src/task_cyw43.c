@@ -17,6 +17,7 @@
 #include "task.h"
 #include "task_prio.h"
 
+#include "global_signal.h"
 
 #define CONNECT_TIMEOUT_MS 10000
 
@@ -30,20 +31,23 @@ void thread_cyw43_init()
 		return;
 	}
 
+	xEventGroupSetBits(mainEventGroup, EVENT_MASK_CYW43_INIT);
+
 	cyw43_arch_enable_sta_mode();
 
 	if (cyw43_arch_wifi_connect_timeout_ms(PARA_SSID, PARA_PWD,
 	CYW43_AUTH_WPA2_AES_PSK, CONNECT_TIMEOUT_MS))
 	{
+		xEventGroupSetBits(mainEventGroup, EVENT_MASK_FAIL);
 		cyw43_arch_deinit();
 		app_panic("failed to connect");
 		return;
 	}
-	else
-	{
-		printf("Connected.\n");
-	}
-	while(1)
+
+	xEventGroupSetBits(mainEventGroup, EVENT_MASK_CONNECTED);
+	printf("Connected.\n");
+
+	while (1)
 	{
 		// everythings OK here
 		vTaskDelay(1333);
@@ -53,6 +57,6 @@ void thread_cyw43_init()
 void task_cyw43_init(void)
 {
 	xTaskCreate(thread_cyw43_init, "CYW43_INIT", configMINIMAL_STACK_SIZE, NULL,
-			CYW43_INIT_TASK_PRIO, &cyw43_init_taskhandle);
+	CYW43_INIT_TASK_PRIO, &cyw43_init_taskhandle);
 }
 

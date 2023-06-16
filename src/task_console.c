@@ -36,6 +36,7 @@ static void console_menu()
 	printf("h Show hostname data\n");
 	printf("x hardware address\n");
 	printf("r reset processor\n");
+	printf("e event bits\n");
 	printf("press key to select\n");
 	printf("------------------------------------\n");
 
@@ -83,6 +84,22 @@ void console_command(int c)
 		scb_hw->aircr = 0x05FA << 16 | 4; // arm M0(+) Manual
 	}
 		break;
+	case 'e':
+	{
+		puts("\n");
+
+		EventBits_t bits = xEventGroupGetBits( mainEventGroup);
+		for(unsigned int mask = 0X80000000; mask !=0; mask >>= 1)
+		{
+			putchar( mask & bits ? '1' : '0');
+			if(mask & 0x01010100)
+			{
+				putchar('.');
+			}
+		}
+		puts("\n");
+	}
+		break;
 	case ' ':
 	default:
 		console_menu();
@@ -100,8 +117,8 @@ void console_thread()
 		xEventGroupWaitBits(
 				mainEventGroup,
 				EVENT_MASK_CONSOLE_CHAR,
-				EVENT_MASK_CONSOLE_CHAR,
-				false,
+				pdTRUE,
+				pdFALSE,
 				100000
 		);
 		if( c != 0)
