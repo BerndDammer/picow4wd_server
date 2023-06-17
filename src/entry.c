@@ -10,6 +10,7 @@
 #include "task_blinker.h"
 #include "task_console.h"
 #include "task_cyw43.h"
+#include "task_network.h"
 #include "global_signal.h"
 
 int gg(void)
@@ -29,6 +30,7 @@ int main(void)
 	blinker_init();
 	console_init();
 	task_cyw43_init();
+	network_init();
 
 
 	printf("\nBefore scheduler %i", gg());
