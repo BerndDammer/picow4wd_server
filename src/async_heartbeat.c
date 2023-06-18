@@ -6,7 +6,7 @@
  */
 
 #define HEARTBEAT_DELAY_TICK pdMS_TO_TICKS(800)
-#define HEARTBEAT_VALID_TIMEOUT_TICK pdMS_TO_TICKS(33333)
+#define HEARTBEAT_VALID_TIMEOUT_TICK pdMS_TO_TICKS(3333)
 
 #include "panic.h"
 #include "global_signal.h"
