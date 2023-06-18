@@ -21,7 +21,7 @@ static TaskHandle_t blinker_taskhandle;
 #define LED_PIN 0
 #define BLINK_TIMEOUT_MS 777
 
-void blinker_thread()
+void blinker_thread(MainEnvironement_t *MainEnvironement)
 {
 	bool toggle = true;
 	EventBits_t bits = 0;
@@ -29,7 +29,7 @@ void blinker_thread()
 	// wait for connection
 	while (!(bits & EVENT_MASK_CONNECTED))
 	{
-		bits = xEventGroupWaitBits(mainEventGroup,
+		bits = xEventGroupWaitBits(MainEnvironement->mainEventGroup,
 		EVENT_MASK_CONNECTED,
 		pdFALSE,
 		pdFALSE, 10000);
@@ -45,9 +45,10 @@ void blinker_thread()
 	}
 }
 
-void blinker_init()
+void blinker_init(MainEnvironement_t *MainEnvironement)
 {
-	xTaskCreate(blinker_thread, "BLINKER", configMINIMAL_STACK_SIZE, NULL,
+	xTaskCreate((void (*)(void*)) blinker_thread, "BLINKER",
+	configMINIMAL_STACK_SIZE, MainEnvironement,
 	BLINKER_TASK_PRIO, &blinker_taskhandle);
 }
 

@@ -11,7 +11,12 @@
 #include "task_console.h"
 #include "task_cyw43.h"
 #include "task_network.h"
+#include "async_heartbeat.h"
 #include "global_signal.h"
+#include "can.h"
+
+// the magic global !
+MainEnvironement_t MainEnvironement;
 
 int gg(void)
 {
@@ -23,15 +28,19 @@ int main(void)
 	printf("\nAt main entry %i", gg()); // no output !!!!
 
 	stdio_init_all();
+
 	printf("\nAfter init stdio %i", gg());
 
-	global_signal_init();
+	int s = sizeof(can_msg_t);
+	MainEnvironement.mainEventGroup = xEventGroupCreate();
+	MainEnvironement.from_host = xQueueCreate( ITEMS_PER_QUEUE, s);
+	MainEnvironement.to_host = xQueueCreate( ITEMS_PER_QUEUE, s);
 
-	blinker_init();
-	console_init();
-	task_cyw43_init();
-	network_init();
-
+	blinker_init(&MainEnvironement);
+	console_init(&MainEnvironement);
+	task_cyw43_init(&MainEnvironement);
+	network_init(&MainEnvironement);
+	heartbeat_init(&MainEnvironement);
 
 	printf("\nBefore scheduler %i", gg());
 	vTaskStartScheduler();

@@ -10,14 +10,25 @@
 
 #include "FreeRTOS.h"
 #include "event_groups.h"
+#include "queue.h"
 
-extern EventGroupHandle_t mainEventGroup;
-void global_signal_init(void);
 
 #define EVENT_MASK_CONSOLE_CHAR 0X400000
 #define EVENT_MASK_FAIL 0X800000
 #define EVENT_MASK_CYW43_INIT 0X000001
 #define EVENT_MASK_CONNECTED 0X000002
 
+#define ITEMS_PER_QUEUE 4
+
+typedef struct
+{
+	EventGroupHandle_t mainEventGroup;
+	QueueHandle_t from_host;
+	QueueHandle_t to_host;
+}MainEnvironement_t;
+
+typedef void (*CALLEE)(void *);
+
+#define XDELAY 10000
 
 #endif /* GLOBAL_SIGNAL_H_ */

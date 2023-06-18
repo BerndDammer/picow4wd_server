@@ -8,9 +8,9 @@
 #ifndef TASK_CYW43_H_
 #define TASK_CYW43_H_
 
-#include "pico/async_context.h"
+#include "global_signal.h"
 
-void task_cyw43_init(void);
+void task_cyw43_init(MainEnvironement_t *MainEnvironement);
 
 
 

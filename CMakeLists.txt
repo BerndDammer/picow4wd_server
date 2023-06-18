@@ -51,7 +51,6 @@ add_executable(picow4wd_server
 	src/task_console.c
 	src/task_cyw43.c
 	src/panic.c
-	src/global_signal.c
 	src/task_network.c
 	src/async_heartbeat.c
 )

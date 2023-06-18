@@ -9,7 +9,7 @@
 #define TASK_CONSOLE_H_
 
 
-void console_init();
+void console_init(MainEnvironement_t *MainEnvironement);
 
 
 #endif /* TASK_CONSOLE_H_ */

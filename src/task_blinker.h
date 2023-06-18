@@ -8,8 +8,9 @@
 #ifndef TASK_BLINKER_H_
 #define TASK_BLINKER_H_
 
+#include "global_signal.h"
 
-void blinker_init();
+void blinker_init(MainEnvironement_t *MainEnvironement);
 
 
 #endif /* TASK_BLINKER_H_ */

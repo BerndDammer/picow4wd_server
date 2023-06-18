@@ -42,7 +42,7 @@ static void console_menu()
 
 }
 
-void console_command(int c)
+void console_command(int c, MainEnvironement_t *MainEnvironement)
 {
 	switch (c)
 	{
@@ -88,11 +88,11 @@ void console_command(int c)
 	{
 		puts("\n");
 
-		EventBits_t bits = xEventGroupGetBits( mainEventGroup);
-		for(unsigned int mask = 0X80000000; mask !=0; mask >>= 1)
+		EventBits_t bits = xEventGroupGetBits(MainEnvironement->mainEventGroup);
+		for (unsigned int mask = 0X80000000; mask != 0; mask >>= 1)
 		{
-			putchar( mask & bits ? '1' : '0');
-			if(mask & 0x01010100)
+			putchar(mask & bits ? '1' : '0');
+			if (mask & 0x01010100)
 			{
 				putchar('.');
 			}
@@ -107,23 +107,20 @@ void console_command(int c)
 	}
 }
 
-void console_thread()
+void console_thread(MainEnvironement_t *MainEnvironement)
 {
 	console_menu();
 
 	while (true)
 	{
 		vTaskDelay(100);
-		xEventGroupWaitBits(
-				mainEventGroup,
-				EVENT_MASK_CONSOLE_CHAR,
-				pdTRUE,
-				pdFALSE,
-				100000
-		);
-		if( c != 0)
+		xEventGroupWaitBits(MainEnvironement->mainEventGroup,
+		EVENT_MASK_CONSOLE_CHAR,
+		pdTRUE,
+		pdFALSE, 100000);
+		if (c != 0)
 		{
-			console_command(c);
+			console_command(c, MainEnvironement);
 			c = 0;
 		}
 		else
@@ -133,16 +130,19 @@ void console_thread()
 	}
 }
 
-void chars_available_callback(void *invalid)
+void chars_available_callback(MainEnvironement_t *MainEnvironement)
 {
 	c = getchar();
-	xEventGroupSetBits(mainEventGroup, EVENT_MASK_CONSOLE_CHAR);
+	xEventGroupSetBits(MainEnvironement->mainEventGroup,
+	EVENT_MASK_CONSOLE_CHAR);
 }
 
-void console_init()
+void console_init(MainEnvironement_t *MainEnvironement)
 {
-	xTaskCreate(console_thread, "CONSOLE", configMINIMAL_STACK_SIZE, NULL,
-	BLINKER_TASK_PRIO, &console_taskhandle);
-	stdio_set_chars_available_callback(chars_available_callback, NULL);
+	xTaskCreate((CALLEE) console_thread, //
+			"CONSOLE", configMINIMAL_STACK_SIZE, MainEnvironement,
+			BLINKER_TASK_PRIO, &console_taskhandle);
+	stdio_set_chars_available_callback((CALLEE)chars_available_callback, //
+			MainEnvironement);
 }
 
