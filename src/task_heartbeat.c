@@ -43,20 +43,27 @@ void heartbeat_thread(MainEnvironement_t *MainEnvironement)
 			msg.len = 8;
 			msg.data[0] = my_heartbeat_counter;
 			msg.data[1] = my_heartbeat_counter >> 8;
-			msg.data[4] = last_echo;
-			msg.data[5] = last_echo >> 8;
-			msg.data[6] = 0XCA;
-			msg.data[7] = 0XFE;
 
 			if(last_incomming_hertbeat_time + HEARTBEAT_VALID_TIMEOUT_TICK > xTaskGetTickCount())
 			{
+				xEventGroupSetBits(MainEnvironement->mainEventGroup, EVENT_MASK_HEARTBEAT);
 				msg.data[2] = last_incomming_counter;
 				msg.data[3] = last_incomming_counter >> 8;
 			}
 			else
 			{
+				xEventGroupClearBits(MainEnvironement->mainEventGroup, EVENT_MASK_HEARTBEAT);
 				msg.data[2] = 0XFF;
 				msg.data[3] = 0XFF;
+			}
+			// put event bits in heartbeat
+			{
+				EventBits_t bits =xEventGroupGetBits(MainEnvironement->mainEventGroup);
+
+				msg.data[4] = bits;
+				msg.data[5] = bits >> 8;
+				msg.data[6] = bits >> 16;
+				msg.data[7] = bits >> 24;
 			}
 
 			xQueueSend( MainEnvironement-> to_host, &msg, XDELAY);
