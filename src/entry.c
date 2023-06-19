@@ -11,7 +11,7 @@
 #include "task_console.h"
 #include "task_cyw43.h"
 #include "task_network.h"
-#include "async_heartbeat.h"
+#include "task_heartbeat.h"
 #include "global_signal.h"
 #include "can.h"
 

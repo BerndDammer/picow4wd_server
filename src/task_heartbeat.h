@@ -5,11 +5,11 @@
  *      Author: manni4
  */
 
-#ifndef ASYNC_HEARTBEAT_H_
-#define ASYNC_HEARTBEAT_H_
+#ifndef TASK_HEARTBEAT_H_
+#define TASK_HEARTBEAT_H_
 
 #include "can.h"
 
 void heartbeat_init(MainEnvironement_t *MainEnvironement);
 
-#endif /* ASYNC_HEARTBEAT_H_ */
+#endif /* TASK_HEARTBEAT_H_ */

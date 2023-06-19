@@ -27,7 +27,7 @@ void blinker_thread(MainEnvironement_t *MainEnvironement)
 	EventBits_t bits = 0;
 
 	// wait for connection
-	while (!(bits & EVENT_MASK_CONNECTED))
+	while (!(bits & EVENT_MASK_CYW43_INIT))
 	{
 		bits = xEventGroupWaitBits(MainEnvironement->mainEventGroup,
 		EVENT_MASK_CONNECTED,

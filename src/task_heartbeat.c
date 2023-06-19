@@ -1,16 +1,10 @@
-/*
- * async_heartbeat.c
- *
- *  Created on: 03.05.2023
- *      Author: manni4
- */
 
 #define HEARTBEAT_DELAY_TICK pdMS_TO_TICKS(800)
 #define HEARTBEAT_VALID_TIMEOUT_TICK pdMS_TO_TICKS(3333)
 
 #include "panic.h"
 #include "global_signal.h"
-#include "async_heartbeat.h"
+#include "task_heartbeat.h"
 #include "task_prio.h"
 #include "can.h"
 
