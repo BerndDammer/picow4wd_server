@@ -49,7 +49,7 @@ add_executable(picow4wd_server
 	src/entry.c 
 	src/task_blinker.c
 	src/task_console.c
-	src/task_cyw43.c
+#	src/task_cyw43.c
 	src/panic.c
 	src/task_network.c
 	src/task_heartbeat.c

@@ -9,7 +9,7 @@
 
 #include "task_blinker.h"
 #include "task_console.h"
-#include "task_cyw43.h"
+//#include "task_cyw43.h"
 #include "task_network.h"
 #include "task_heartbeat.h"
 #include "global_signal.h"
@@ -38,7 +38,7 @@ int main(void)
 
 	blinker_init(&MainEnvironement);
 	console_init(&MainEnvironement);
-	task_cyw43_init(&MainEnvironement);
+//	task_cyw43_init(&MainEnvironement);
 	network_init(&MainEnvironement);
 	heartbeat_init(&MainEnvironement);
 
