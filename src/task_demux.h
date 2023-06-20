@@ -9,6 +9,8 @@
 #define TASK_DEMUX_H_
 
 
+void demux_init(MainEnvironement_t *MainEnvironement);
+
 
 
 

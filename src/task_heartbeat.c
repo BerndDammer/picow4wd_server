@@ -30,7 +30,7 @@ void heartbeat_thread(MainEnvironement_t *MainEnvironement)
 		BaseType_t result;
 		TickType_t delay = nextTransmitt - xTaskGetTickCount();
 		if( delay < 1) delay = 1;
-		result = xQueueReceive( MainEnvironement->from_host, &msg, delay);
+		result = xQueueReceive( MainEnvironement->to_heartbeat, &msg, delay);
 		if( result == pdPASS)
 		{
 			last_incomming_counter = msg.data[0] | msg.data[1] << 8;
@@ -39,7 +39,7 @@ void heartbeat_thread(MainEnvironement_t *MainEnvironement)
 		}
 		else if( result == errQUEUE_EMPTY )
 		{
-			msg.id = CAN_ID_HEARTBEAT;
+			msg.id = CAN___ID_HEARTBEAT;
 			msg.len = 8;
 			msg.data[0] = my_heartbeat_counter;
 			msg.data[1] = my_heartbeat_counter >> 8;
