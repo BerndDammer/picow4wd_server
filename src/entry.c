@@ -9,9 +9,11 @@
 
 #include "task_blinker.h"
 #include "task_console.h"
-//#include "task_cyw43.h"
 #include "task_network.h"
 #include "task_heartbeat.h"
+#include "task_demux.h"
+#include "task_drive.h"
+
 #include "global_signal.h"
 #include "can.h"
 
@@ -35,12 +37,14 @@ int main(void)
 	MainEnvironement.mainEventGroup = xEventGroupCreate();
 	MainEnvironement.from_host = xQueueCreate( ITEMS_PER_QUEUE, s);
 	MainEnvironement.to_host = xQueueCreate( ITEMS_PER_QUEUE, s);
+	MainEnvironement.to_drive = xQueueCreate( ITEMS_PER_QUEUE, s);
 
 	blinker_init(&MainEnvironement);
 	console_init(&MainEnvironement);
-//	task_cyw43_init(&MainEnvironement);
 	network_init(&MainEnvironement);
 	heartbeat_init(&MainEnvironement);
+	demux_init(&MainEnvironement);
+	drive_init(&MainEnvironement);
 
 	printf("\nBefore scheduler %i", gg());
 	vTaskStartScheduler();

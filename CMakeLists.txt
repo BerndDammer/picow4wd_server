@@ -47,12 +47,13 @@ pico_sdk_init()
 
 add_executable(picow4wd_server 
 	src/entry.c 
+	src/panic.c
 	src/task_blinker.c
 	src/task_console.c
-#	src/task_cyw43.c
-	src/panic.c
 	src/task_network.c
 	src/task_heartbeat.c
+	src/task_demux.c
+	src/task_drive.c
 )
 
 
@@ -70,10 +71,6 @@ pico_set_program_version(picow4wd_server "0.1")
 pico_enable_stdio_uart(picow4wd_server 1)
 pico_enable_stdio_usb(picow4wd_server 1)
 
-# Add the standard library to the build
-target_link_libraries(picow4wd_server
-        pico_stdlib)
-
 # Add the standard include files to the build
 target_include_directories(picow4wd_server PRIVATE
   ${CMAKE_CURRENT_LIST_DIR}
@@ -82,11 +79,11 @@ target_include_directories(picow4wd_server PRIVATE
 
 # Add any user requested libraries
 target_link_libraries(picow4wd_server
+    pico_stdlib
     hardware_spi
     hardware_timer
     hardware_clocks
 	pico_cyw43_arch_lwip_sys_freertos
-	#FreeRTOS-Kernel
     FreeRTOS-Kernel-Heap4
 )
 
