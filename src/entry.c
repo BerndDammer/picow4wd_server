@@ -37,6 +37,7 @@ int main(void)
 	MainEnvironement.mainEventGroup = xEventGroupCreate();
 	MainEnvironement.from_host = xQueueCreate( ITEMS_PER_QUEUE, s);
 	MainEnvironement.to_host = xQueueCreate( ITEMS_PER_QUEUE, s);
+	MainEnvironement.to_heartbeat = xQueueCreate( ITEMS_PER_QUEUE, s);
 	MainEnvironement.to_drive = xQueueCreate( ITEMS_PER_QUEUE, s);
 
 	blinker_init(&MainEnvironement);

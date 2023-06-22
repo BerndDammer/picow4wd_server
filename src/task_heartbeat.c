@@ -21,7 +21,6 @@ void heartbeat_thread(MainEnvironement_t *MainEnvironement)
 	TickType_t nextTransmitt = xTaskGetTickCount() + HEARTBEAT_DELAY_TICK;
 
 	short last_incomming_counter = -1;
-	short last_echo = -1;
 	short my_heartbeat_counter = 1;
 
 	while(true)
@@ -34,7 +33,6 @@ void heartbeat_thread(MainEnvironement_t *MainEnvironement)
 		if( result == pdPASS)
 		{
 			last_incomming_counter = msg.data[0] | msg.data[1] << 8;
-			last_echo = msg.data[2] | msg.data[3] << 8;
 			last_incomming_hertbeat_time = xTaskGetTickCount();
 		}
 		else if( result == errQUEUE_EMPTY )
