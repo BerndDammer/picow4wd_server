@@ -54,6 +54,7 @@ add_executable(picow4wd_server
 	src/task_heartbeat.c
 	src/task_demux.c
 	src/task_drive.c
+	src/hardware_drive.c
 )
 
 
@@ -83,6 +84,7 @@ target_link_libraries(picow4wd_server
     hardware_spi
     hardware_timer
     hardware_clocks
+    hardware_pwm
 	pico_cyw43_arch_lwip_sys_freertos
     FreeRTOS-Kernel-Heap4
 )
