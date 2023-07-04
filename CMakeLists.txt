@@ -54,7 +54,9 @@ add_executable(picow4wd_server
 	src/task_heartbeat.c
 	src/task_demux.c
 	src/task_drive.c
+	src/task_lights.c
 	src/hardware_drive.c
+	src/hardware_lights.c
 )
 
 

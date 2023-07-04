@@ -38,5 +38,10 @@ typedef struct
 #define CAN__VAL_DRIVE 0X02050100
 #define CAN___ID_DRIVE 0X82050101
 
+// lights
+#define CAN_MASK_LIGHTS 0X1FFFFF00
+#define CAN__VAL_LIGHTS 0X02060100
+#define CAN___ID_LIGHTS 0X82060101
+
 
 #endif /* CAN_H_ */

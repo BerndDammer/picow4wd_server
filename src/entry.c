@@ -13,6 +13,7 @@
 #include "task_heartbeat.h"
 #include "task_demux.h"
 #include "task_drive.h"
+#include "task_lights.h"
 
 #include "global_signal.h"
 #include "can.h"
@@ -39,6 +40,7 @@ int main(void)
 	MainEnvironement.to_host = xQueueCreate( ITEMS_PER_QUEUE, s);
 	MainEnvironement.to_heartbeat = xQueueCreate( ITEMS_PER_QUEUE, s);
 	MainEnvironement.to_drive = xQueueCreate( ITEMS_PER_QUEUE, s);
+	MainEnvironement.to_lights = xQueueCreate( ITEMS_PER_QUEUE, s);
 
 	blinker_init(&MainEnvironement);
 	console_init(&MainEnvironement);
@@ -46,6 +48,7 @@ int main(void)
 	heartbeat_init(&MainEnvironement);
 	demux_init(&MainEnvironement);
 	drive_init(&MainEnvironement);
+	lights_init(&MainEnvironement);
 
 	printf("\nBefore scheduler %i", gg());
 	vTaskStartScheduler();

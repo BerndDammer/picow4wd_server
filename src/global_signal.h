@@ -27,6 +27,7 @@ typedef struct
 	QueueHandle_t from_host;
 	QueueHandle_t to_host;
 	QueueHandle_t to_drive;
+	QueueHandle_t to_lights;
 	QueueHandle_t to_heartbeat;
 }MainEnvironement_t;
 

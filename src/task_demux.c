@@ -29,6 +29,8 @@ void demux_thread(MainEnvironement_t *MainEnvironement)
 	{ CAN_MASK_HEARTBEAT, CAN__VAL_HEARTBEAT };
 	can_filter_t can_filter_drive =
 	{ CAN_MASK_DRIVE, CAN__VAL_DRIVE };
+	can_filter_t can_filter_lights =
+	{ CAN_MASK_LIGHTS, CAN__VAL_LIGHTS };
 
 	while (true)
 	{
@@ -42,6 +44,10 @@ void demux_thread(MainEnvironement_t *MainEnvironement)
 			else if (check_can_filter(&can_filter_heartbeat, &msg))
 			{
 				xQueueSend(MainEnvironement->to_heartbeat, &msg, XDELAY);
+			}
+			else if (check_can_filter(&can_filter_lights, &msg))
+			{
+				xQueueSend(MainEnvironement->to_lights, &msg, XDELAY);
 			}
 			else
 			{
