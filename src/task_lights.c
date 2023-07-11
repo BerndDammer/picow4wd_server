@@ -1,15 +1,47 @@
 #include <stdio.h>
+#include <stdbool.h>
 
 #include "task_drive.h"
 #include "task_prio.h"
 #include "can.h"
 #include "hardware_lights.h"
+#include "global_signal.h"
 
 static TaskHandle_t lights_taskhandle;
 
 #define POWER_OFF_DELAY_TICK pdMS_TO_TICKS(1000)
 
+void check_connected(bool has_control, bool *last,
+		MainEnvironement_t *MainEnvironement) {
+	if (has_control) {
+		if (!*last) {
+			hardware_lights_off();
+			*last = true;
+		}
+	} else {
+		hardware_lights_off();
+		EventBits_t mask = xEventGroupGetBits(MainEnvironement->mainEventGroup);
+		if ((mask & 0X800007) != 7) {
+			bool set;
+			*last = false;
+			set = (mask & 0x800000) != 0;
+			hardware_lights_set_single(7, set ? 1 : 0, set ? 0 : 1, 0);
+
+			set = (mask & 0x4) != 0;
+			hardware_lights_set_single(2, set ? 0 : 1, set ? 1 : 0, 0);
+			set = (mask & 0x2) != 0;
+			hardware_lights_set_single(1, set ? 0 : 1, set ? 1 : 0, 0);
+			set = (mask & 0x1) != 0;
+			hardware_lights_set_single(0, set ? 0 : 1, set ? 1 : 0, 0);
+
+		} else {
+			*last = true;
+		}
+	}
+}
 void lights_thread(MainEnvironement_t *MainEnvironement) {
+	bool connected = false;
+
 	hardware_lights_init();
 
 	while (true) {
@@ -19,6 +51,7 @@ void lights_thread(MainEnvironement_t *MainEnvironement) {
 		result = xQueueReceive(MainEnvironement->to_lights, &msg,
 		POWER_OFF_DELAY_TICK);
 		if (result == pdPASS) {
+			check_connected(true, &connected, MainEnvironement);
 			switch (msg.id) {
 			case CAN___ID_LIGHTS:
 				if (msg.len == 4 || msg.len == 8) {
@@ -34,7 +67,7 @@ void lights_thread(MainEnvironement_t *MainEnvironement) {
 				break;
 			}
 		} else if (result == errQUEUE_EMPTY) {
-			hardware_lights_off();
+			check_connected(false, &connected, MainEnvironement);
 		}
 	}
 }
