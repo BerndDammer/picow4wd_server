@@ -35,7 +35,7 @@ project(picow4wd_server C CXX ASM)
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
 
-# Add executable. Default name is the project name, version 0.1
+# Add executable. Default name is the project name, version 0.2.1
 
 
 
@@ -69,7 +69,7 @@ target_include_directories(picow4wd_server PRIVATE
 target_compile_definitions(picow4wd_server PRIVATE NO_SYS=0 )
 
 pico_set_program_name(picow4wd_server "picow4wd_server")
-pico_set_program_version(picow4wd_server "0.1")
+pico_set_program_version(picow4wd_server "0.2.1")
 
 pico_enable_stdio_uart(picow4wd_server 1)
 pico_enable_stdio_usb(picow4wd_server 1)
